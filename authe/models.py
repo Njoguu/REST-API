@@ -1,4 +1,3 @@
-from enum import auto
 from django.db import models
 
 # Create your models here.

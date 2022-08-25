@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = 'authe.User'
 
 # Application definition
 
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'rest_framework',
-    'auth'
+    'authe'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +83,10 @@ DATABASES = {
     }
 }
 
+
+REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY' : 'error'
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
