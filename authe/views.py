@@ -1,3 +1,4 @@
+from tkinter import EXCEPTION
 from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import RegisterSerializer
@@ -7,6 +8,8 @@ from .models import User
 from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
+import jwt
+from django.conf import settings
 
 # Create your views here.
 class RegisterView(generics.GenericAPIView):
@@ -38,5 +41,16 @@ class RegisterView(generics.GenericAPIView):
         return Response(user_data, status=status.HTTP_201_CREATED)
         
 class VerifyEmail(generics.GenericAPIView):
-    def get(self):
-        pass
+    def get(self, request):
+        token = request.GET.get('token')
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY)
+            user = User.objects.get(id=payload['user_id'])
+            if not user.is_verified:
+                user.is_verified = True
+                user.save()
+            return Response({'email':'Successfully Activated!' }, status=status.HTTP_200_OK)
+        except jwt.ExpiredSignatureError as err:
+            return Response({'error':' Activation Link has expired!' }, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.exceptions.DecodeError as err:
+            return Response({'error':' Invalid Token, request a new one!' }, status=status.HTTP_400_BAD_REQUEST)
