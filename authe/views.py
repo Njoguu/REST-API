@@ -32,11 +32,13 @@ class RegisterView(generics.GenericAPIView):
         relativeLink = reverse('email-verify')
         absurl = "http://" + current_site + relativeLink + "?token=" + str(token) 
         email_body = 'Hi ' + user.username + ', please use the link below to verify your account email! \n\n\n' + absurl
+
         data = {
             'email_body' : email_body,
             'to_email' : user.email,
             'email_subject' : 'Verify your account email'
         }
+        
         Util.send_email(data)
 
         return Response(user_data, status=status.HTTP_201_CREATED)
