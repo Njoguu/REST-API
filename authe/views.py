@@ -1,4 +1,3 @@
-from tkinter import EXCEPTION
 from django.shortcuts import render
 from rest_framework import generics, status, views
 from .serializers import LoginSerializer, RegisterSerializer, EmailVerificationSerializer
@@ -31,18 +30,18 @@ class RegisterView(generics.GenericAPIView):
 
         current_site = get_current_site(request).domain
         relativeLink = reverse('email-verify')
-        absurl = 'http://' + current_site + relativeLink + '?token=' + str(token) 
-        email_body = 'Hi' + user.username + 'please use the link below to verify your account email! \n' + absurl
+        absurl = "http://" + current_site + relativeLink + "?token=" + str(token) 
+        email_body = 'Hi ' + user.username + ', please use the link below to verify your account email! \n\n\n' + absurl
         data = {
             'email_body' : email_body,
             'to_email' : user.email,
-            'email_subject' : 'Verify your email'
+            'email_subject' : 'Verify your account email'
         }
         Util.send_email(data)
 
         return Response(user_data, status=status.HTTP_201_CREATED)
         
-class VerifyEmail(views.APIView):
+class VerifyEmail(generics.GenericAPIView):
 
     serializer_class = EmailVerificationSerializer
 
